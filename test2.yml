@@ -1,0 +1,57 @@
+---
+
+- hosts: localhost
+  collections:
+    - netapp.ontap
+  name: test display cluster information
+  
+  vars_prompt:
+    - name: hostname
+      prompt: Enter host IP 
+      private: false
+    - name: username
+      prompt: Enter username
+      private: false
+    - name: password
+      prompt: Enter password
+      private: true
+#    - name: dst_cluster
+#      prompt: Enter destination IP
+#      private: false
+ 
+  vars:
+    login: &login
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      https: true
+      validate_certs: false
+      
+#    login: &login
+#      hostname: "{{ dst_cluster }}"
+#      username: "{{ username }}"
+#      password: "{{ password }}"
+#      https: true
+#      validate_certs: false
+      
+  tasks:
+  
+  - name: Get volume info
+    na_ontap_info:
+      state: info
+      gather_subset: volume_info
+      <<: *login
+    register: results
+  - name: Display results
+    debug: 
+      msg: "{{ results }}"
+
+  - name: display cluster information
+    na_ontap_info:
+      state: info
+      gather_subset: cluster_identity_info
+      <<: *login
+    register: cluster_info
+  - name: Display results
+    debug:
+      msg: "{{ cluster_info }}"
