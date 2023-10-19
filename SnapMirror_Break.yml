@@ -13,7 +13,7 @@
       private: false
     - name: passw
       prompt: Enter password
-      private: false
+      private: true
     - name: svm
       prompt: Enter SVM name
       private: false
