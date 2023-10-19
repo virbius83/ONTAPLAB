@@ -1,0 +1,35 @@
+---
+- hosts: localhost
+  collections:
+    - netapp.ontap
+  name: SnapMirror break test script
+  vars:
+    login: &login
+      hostname: 192.168.89.120
+      username: admin
+      password: Virbius83!
+#      dst_svr: iSCSI_repo
+      https: true
+      validate_certs: false
+
+  tasks:
+  - name: Return SVM-DR status
+    na_ontap_command:
+      hostname: "{{ hostname }}"
+      username: "{{ username }}"
+      password: "{{ password }}"
+      dst_svm: "{{ dst_svm }}"
+      https: true
+      validate_certs: false
+      command: ['snapmirror show -destination-path {{ dst_svm }}: -fields state']
+      return_dict: true
+      <<: *login
+    register: svmdrstatus
+    until: svmdrstatus.msg.stdout.find("Snapmirrored") != -1
+    retries: 12
+    delay: 30
+
+  - name: Return SVM-DR status
+    debug:
+      msg: "{{ svmdrstatus.msg.stdout_lines[2].split()[2] }}"
+

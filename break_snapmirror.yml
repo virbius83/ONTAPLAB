@@ -45,7 +45,7 @@
     retries: 12
     delay: 30
 
-  - name: return svm-dr status
-    debug:
-      msg: "{{ svm_dr_status.msg.stdout_lines[2].split()[2] }}"
+#  - name: return svm-dr status
+#    debug:
+#      msg: "{{ svm_dr_status.msg.stdout_lines[2].split()[2] }}"
 
